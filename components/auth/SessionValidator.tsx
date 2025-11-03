@@ -17,7 +17,7 @@ export function SessionValidator() {
   const router = useRouter();
 
   useEffect(() => {
-    // Проверка валидности сессии каждые 30 секунд
+    // Проверка валидности сессии каждые 60 секунд
     const checkSession = async () => {
       try {
         const { data: { user }, error } = await supabase.auth.getUser();
@@ -30,22 +30,16 @@ export function SessionValidator() {
         }
       } catch (error) {
         console.error('[SessionValidator] Ошибка проверки сессии:', error);
-        // При критической ошибке - выходим для безопасности
-        await supabase.auth.signOut();
-        router.push('/login');
       }
     };
 
-    // Первоначальная проверка
-    checkSession();
+    // Периодическая проверка каждые 60 секунд (БЕЗ первоначальной проверки)
+    const interval = setInterval(checkSession, 60000);
 
-    // Периодическая проверка каждые 30 секунд
-    const interval = setInterval(checkSession, 30000);
-
-    // Также слушаем события auth state change от Supabase
+    // Слушаем только событие выхода
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' && !session) {
-        console.log('[SessionValidator] Auth state change:', event);
+      if (event === 'SIGNED_OUT') {
+        console.log('[SessionValidator] Пользователь вышел из системы');
         router.push('/login');
       }
     });
