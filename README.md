@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Админ-панель Natura Matrace
 
-## Getting Started
+Админ-панель для управления стилями сайта Natura Matrace.
 
-First, run the development server:
+## Технологии
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 15** - App Router
+- **TypeScript** - Типизация
+- **Tailwind CSS** - Стилизация
+- **Supabase** - База данных и авторизация
+- **Shadcn UI** - UI компоненты
+
+## Структура проекта
+
+```
+Admin/
+├── app/
+│   ├── (auth)/                 # Группа маршрутов авторизации
+│   │   ├── layout.tsx          # Layout для страниц auth
+│   │   └── login/
+│   │       └── page.tsx        # Страница входа
+│   ├── (dashboard)/            # Группа защищённых маршрутов
+│   │   ├── layout.tsx          # Layout с навигацией
+│   │   ├── page.tsx            # Главная страница dashboard
+│   │   ├── typography/         # Управление типографикой
+│   │   ├── variables/          # Управление CSS переменными
+│   │   └── users/              # Управление пользователями
+│   ├── layout.tsx              # Root layout
+│   └── page.tsx                # Редирект на /dashboard
+├── components/
+│   ├── ui/                     # Shadcn UI компоненты
+│   ├── dashboard/              # Компоненты dashboard
+│   └── auth/                   # Компоненты авторизации
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts           # Browser client
+│   │   └── server.ts           # Server client
+│   └── utils.ts                # Утилиты
+├── middleware.ts               # Защита роутов
+└── .env.local                  # Environment variables
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xuatcmcuqhgwmgwifxzd.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Установка и запуск
 
-## Learn More
+```bash
+# Установка зависимостей
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Разработка
+npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Сборка
+npm run build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Запуск production
+npm start
+```
 
-## Deploy on Vercel
+## Статус реализации
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### ✅ Реализовано (MN-106)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 15 проект с TypeScript
+- Структура директорий
+- Supabase интеграция
+- Middleware для защиты роутов
+- Layouts (root, auth, dashboard)
+- Базовые страницы (заглушки)
+
+### 🚧 В разработке
+
+- **MN-107**: Форма логина и авторизация
+- **MN-108**: Управление типографикой (CRUD)
+- **MN-109**: Управление CSS переменными (CRUD)
+- **MN-110**: Управление пользователями
+
+## Деплой
+
+Проект настроен для деплоя на Vercel:
+
+1. Подключите GitHub репозиторий к Vercel
+2. Настройте Environment Variables в Vercel Dashboard
+3. Деплой произойдёт автоматически
+
+## Маршруты
+
+### Публичные
+
+- `/login` - Страница входа
+
+### Защищённые (требуют авторизации)
+
+- `/dashboard` - Главная страница
+- `/dashboard/typography` - Управление типографикой
+- `/dashboard/variables` - Управление CSS переменными
+- `/dashboard/users` - Управление пользователями
+
+## Middleware
+
+Middleware автоматически:
+- Редиректит неавторизованных пользователей на `/login`
+- Редиректит авторизованных с `/login` на `/dashboard`
+- Проверяет сессию на каждом запросе
+
+## Supabase Tables
+
+### typography_styles
+Хранит Tailwind классы для типографики
+
+### css_variables
+Хранит кастомные CSS переменные
+
+## Разработка
+
+### Добавление новых страниц
+
+1. Создайте файл в `app/(dashboard)/[your-page]/page.tsx`
+2. Добавьте ссылку в `app/(dashboard)/layout.tsx`
+
+### Добавление Shadcn компонентов
+
+```bash
+npx shadcn@latest add [component-name]
+```
+
+Или используйте REUI:
+```
+https://reui.io/r/[component-name].json
+```
+
+## Licence
+
+Private project for Natura Matrace
