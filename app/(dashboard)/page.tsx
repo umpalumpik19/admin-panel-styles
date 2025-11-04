@@ -9,13 +9,9 @@ export default async function DashboardPage() {
 
   const { data: { user } } = await supabase.auth.getUser();
 
-  // Получаем статистику из таблиц
+  // Получаем статистику из таблицы typography_styles
   const { count: typographyCount } = await supabase
     .from('typography_styles')
-    .select('*', { count: 'exact', head: true });
-
-  const { count: variablesCount } = await supabase
-    .from('css_variables')
     .select('*', { count: 'exact', head: true });
 
   return (
@@ -27,24 +23,14 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
           <h3 className="text-sm font-medium text-gray-500">
             Классы типографики
           </h3>
           <p className="mt-2 text-3xl font-bold text-gray-900">{typographyCount || 0}</p>
           <p className="mt-1 text-sm text-gray-500">
-            Tailwind классы для текста
-          </p>
-        </div>
-
-        <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-          <h3 className="text-sm font-medium text-gray-500">
-            CSS переменные
-          </h3>
-          <p className="mt-2 text-3xl font-bold text-gray-900">{variablesCount || 0}</p>
-          <p className="mt-1 text-sm text-gray-500">
-            Кастомные CSS переменные
+            Tailwind классы шрифтов из globals.css
           </p>
         </div>
 
@@ -64,8 +50,8 @@ export default async function DashboardPage() {
           Информация
         </h3>
         <p className="text-sm text-blue-700">
-          Эта админ-панель позволяет управлять стилями сайта Natura Matrace.
-          Используйте разделы выше для редактирования типографики и CSS переменных.
+          Эта админ-панель позволяет управлять Tailwind классами шрифтов для сайта Natura Matrace.
+          Используйте раздел "Типографика" для редактирования стилей текста.
         </p>
       </div>
     </div>

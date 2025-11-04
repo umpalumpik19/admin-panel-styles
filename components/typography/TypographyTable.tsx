@@ -26,13 +26,13 @@ export function TypographyTable({ styles }: TypographyTableProps) {
                   Класс
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Шрифт
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Размер
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Вес
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Цвет
                 </th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Высота строки
@@ -47,11 +47,12 @@ export function TypographyTable({ styles }: TypographyTableProps) {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {styles.map((style) => {
-                // Формируем inline стиль для preview
+                // Формируем inline стиль для preview (только шрифтовые свойства)
                 const previewStyle: React.CSSProperties = {
+                  fontFamily: style.font_family,
                   fontSize: `${style.font_size}${style.font_size_unit}`,
                   fontWeight: style.font_weight,
-                  color: style.color,
+                  fontStyle: style.font_style,
                   lineHeight: style.line_height_unit === 'unitless'
                     ? style.line_height
                     : `${style.line_height}${style.line_height_unit}`,
@@ -64,21 +65,16 @@ export function TypographyTable({ styles }: TypographyTableProps) {
                         {style.class_name}
                       </code>
                     </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      <div className="max-w-xs truncate" title={style.font_family}>
+                        {style.font_family}
+                      </div>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {style.font_size}{style.font_size_unit}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {style.font_weight}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-6 h-6 rounded border border-gray-300"
-                          style={{ backgroundColor: style.color }}
-                          title={style.color}
-                        />
-                        <span className="text-sm text-gray-900 font-mono">{style.color}</span>
-                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {style.line_height}{style.line_height_unit === 'unitless' ? '' : style.line_height_unit}

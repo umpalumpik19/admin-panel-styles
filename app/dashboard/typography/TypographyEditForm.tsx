@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { TypographyStyle, TypographyFormData, FONT_SIZE_UNITS, LINE_HEIGHT_UNITS, LETTER_SPACING_UNITS, BORDER_RADIUS_UNITS, TEXT_TRANSFORM_OPTIONS, FONT_STYLE_OPTIONS, FONT_WEIGHT_OPTIONS } from '@/types/typography';
+import { TypographyStyle, TypographyFormData, FONT_SIZE_UNITS, LINE_HEIGHT_UNITS, LETTER_SPACING_UNITS, TEXT_TRANSFORM_OPTIONS, FONT_STYLE_OPTIONS, FONT_WEIGHT_OPTIONS, FONT_FAMILY_OPTIONS } from '@/types/typography';
 import { TypographyPreview } from '@/components/typography/TypographyPreview';
 
 interface TypographyEditFormProps {
@@ -20,20 +20,18 @@ export function TypographyEditForm({ style, onCancel }: TypographyEditFormProps)
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // Состояние формы с live preview
+  // Состояние формы с live preview (только шрифтовые свойства)
   const [formData, setFormData] = useState<TypographyFormData>({
+    font_family: style.font_family,
     font_size: style.font_size,
     font_size_unit: style.font_size_unit,
     font_weight: style.font_weight,
-    color: style.color,
+    font_style: style.font_style,
     line_height: style.line_height,
     line_height_unit: style.line_height_unit,
     letter_spacing: style.letter_spacing,
     letter_spacing_unit: style.letter_spacing_unit,
     text_transform: style.text_transform,
-    font_style: style.font_style,
-    border_radius: style.border_radius,
-    border_radius_unit: style.border_radius_unit,
   });
 
   // Обработчик изменений полей
@@ -105,6 +103,24 @@ export function TypographyEditForm({ style, onCancel }: TypographyEditFormProps)
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Левая колонка - форма */}
             <div className="space-y-4">
+              {/* Font Family */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Семейство шрифтов
+                </label>
+                <select
+                  value={formData.font_family}
+                  onChange={(e) => handleChange('font_family', e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  {FONT_FAMILY_OPTIONS.map(family => (
+                    <option key={family} value={family} style={{ fontFamily: family }}>
+                      {family}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Font Size */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -145,29 +161,6 @@ export function TypographyEditForm({ style, onCancel }: TypographyEditFormProps)
                     <option key={weight} value={weight}>{weight}</option>
                   ))}
                 </select>
-              </div>
-
-              {/* Color */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Цвет текста
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={formData.color}
-                    onChange={(e) => handleChange('color', e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
-                    placeholder="#000000 или rgb(0,0,0)"
-                    required
-                  />
-                  <input
-                    type="color"
-                    value={formData.color.startsWith('#') ? formData.color : '#000000'}
-                    onChange={(e) => handleChange('color', e.target.value)}
-                    className="w-12 h-10 border border-gray-300 rounded-md cursor-pointer"
-                  />
-                </div>
               </div>
 
               {/* Line Height */}
@@ -252,32 +245,6 @@ export function TypographyEditForm({ style, onCancel }: TypographyEditFormProps)
                     <option key={styleOption} value={styleOption}>{styleOption}</option>
                   ))}
                 </select>
-              </div>
-
-              {/* Border Radius */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Скругление углов (опционально)
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={formData.border_radius || ''}
-                    onChange={(e) => handleChange('border_radius', e.target.value ? parseFloat(e.target.value) : null)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="0"
-                  />
-                  <select
-                    value={formData.border_radius_unit}
-                    onChange={(e) => handleChange('border_radius_unit', e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
-                    {BORDER_RADIUS_UNITS.map(unit => (
-                      <option key={unit} value={unit}>{unit}</option>
-                    ))}
-                  </select>
-                </div>
               </div>
             </div>
 
