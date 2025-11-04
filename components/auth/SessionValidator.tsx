@@ -10,42 +10,29 @@ const supabase = createClient(
 );
 
 /**
- * Компонент для периодической проверки валидности сессии пользователя
+ * Компонент для проверки валидности сессии пользователя
  * Если пользователь удален из системы, автоматически выходит из админки
+ *
+ * ВРЕМЕННО ОТКЛЮЧЕН - использует только auth state change listener
  */
 export function SessionValidator() {
   const router = useRouter();
 
   useEffect(() => {
-    // Проверка валидности сессии каждые 60 секунд
-    const checkSession = async () => {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser();
+    console.log('[SessionValidator] Компонент инициализирован');
 
-        // Если пользователь не найден или произошла ошибка - выходим
-        if (!user || error) {
-          console.log('[SessionValidator] Пользователь невалиден, выход из системы');
-          await supabase.auth.signOut();
-          router.push('/login');
-        }
-      } catch (error) {
-        console.error('[SessionValidator] Ошибка проверки сессии:', error);
-      }
-    };
-
-    // Периодическая проверка каждые 60 секунд (БЕЗ первоначальной проверки)
-    const interval = setInterval(checkSession, 60000);
-
-    // Слушаем только событие выхода
+    // Слушаем только событие выхода (без периодических проверок)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[SessionValidator] Auth event:', event, 'Session exists:', !!session);
+
       if (event === 'SIGNED_OUT') {
-        console.log('[SessionValidator] Пользователь вышел из системы');
+        console.log('[SessionValidator] Пользователь вышел из системы, редирект на /login');
         router.push('/login');
       }
     });
 
     return () => {
-      clearInterval(interval);
+      console.log('[SessionValidator] Компонент размонтирован');
       subscription.unsubscribe();
     };
   }, [router]);
